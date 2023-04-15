@@ -10,7 +10,7 @@ La méthode ```get_showtime(id_cinema, day_shift)``` retourne la liste des séan
 # Import
 
 ```python
-from src import allocineAPI
+from allocineAPI.allocineAPI import allocineAPI
 
 api = allocineAPI()
 ```
