@@ -1,8 +1,17 @@
-# Readme
+# Description
+<ins>Objectif</ins> : récupération des horaires des séances de cinéma.
+
+Les méthodes ```get_top_villes()```, ```get_departements()``` et ```get_circuit()``` retournent un id d’emplacement.
+
+La méthode ```get_cinema(id_location)``` retourne un id de cinéma pour un emplacement donné.
+
+La méthode ```get_showtime(id_cinema, day_shift)``` retourne la liste des séances pour un cinema donné et un jour. le paramètre day_shift (entier positif) représente le décalage en jour par rapport à la date actuelle.
 
 # Import
+
 ```python
-from allocineAPI import allocineAPI
+from src import allocineAPI
+
 api = allocineAPI()
 ```
 # Liste des méthodes
