@@ -118,23 +118,28 @@ class allocineAPI:
         :param day_shift: décalage en jours par rapport à la date actuelle (positif)
         :return:
         """
-        json_data = self._get_json_request(URLs.showtime_url(id_cinema, day_shift))
         formated_data = list()
-        for movie in json_data["results"]:
-            title = movie["movie"]["title"]
-            duration = movie["movie"]["runtime"]
-            list_vf = list()
-            for showtime_original in movie["showtimes"]["original"]:
-                list_vf.append(showtime_original["startsAt"])
-            list_vo = list()
-            for showtime_multiple in movie["showtimes"]["multiple"]:
-                list_vo.append(showtime_multiple["startsAt"])
-            formated_data.append({
-                "title": title,
-                "duration": duration,
-                "VF": list_vf,
-                "VO": list_vo
-            })
+        page, totalPages = 0, 1
+        while page < totalPages:
+            json_data = self._get_json_request(URLs.showtime_url(id_cinema, day_shift, page+1))
+            page = int(json_data["pagination"]["page"])
+            totalPages = int(json_data["pagination"]["totalPages"])
+            for movie in json_data["results"]:
+                title = movie["movie"]["title"]
+                duration = movie["movie"]["runtime"]
+                list_vf = list()
+                for showtime_original in movie["showtimes"]["original"]:
+                    list_vf.append(showtime_original["startsAt"])
+                list_vo = list()
+                for showtime_multiple in movie["showtimes"]["multiple"]:
+                    list_vo.append(showtime_multiple["startsAt"])
+                formated_data.append({
+                    "title": title,
+                    "duration": duration,
+                    "VF": list_vf,
+                    "VO": list_vo
+                })
+
         return formated_data
 
 
@@ -157,8 +162,8 @@ class URLs:
             return URLs.BASE_URL + URLs.SEANCES + URLs.CINEMA + id_location
 
     @staticmethod
-    def showtime_url(id_cinema, day_shift):
-        return URLs.BASE_URL + URLs.SHOWTIMES + id_cinema + "/d-" + str(day_shift)
+    def showtime_url(id_cinema, day_shift, page):
+        return URLs.BASE_URL + URLs.SHOWTIMES + id_cinema + "/d-" + str(day_shift) + "/p-" + str(page)
 
 
 if __name__ == '__main__':
@@ -185,6 +190,7 @@ if __name__ == '__main__':
     # for cinema in cinemas:
     #     print(cinema)
 
-    data = api.get_showtime("W2920")
+    data = api.get_showtime("P0036")
     for showtime in data:
         print(showtime)
+    print(len(data))
