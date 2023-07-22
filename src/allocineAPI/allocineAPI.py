@@ -111,40 +111,88 @@ class allocineAPI:
 
         return result
 
-    def get_showtime(self, id_cinema, day_shift=0):
+    def get_showtime(self, id_cinema, day_shift=0, verbose_url=False):
         """
         Récupération des horaires des seances pour un cinema, pour un jour donné
+        :param verbose_url: url de la requête scrapter
         :param id_cinema: id du cinema
-        :param day_shift: décalage en jours par rapport à la date actuelle (positif)
+        :param days_shift: décalages en jours par rapport à la date actuelle (positif)
         :return:
         """
         formated_data = list()
         page, totalPages = 0, 1
         while page < totalPages:
-            json_data = self._get_json_request(URLs.showtime_url(id_cinema, day_shift, page+1))
+            if verbose_url:
+                print(URLs.showtime_url(id_cinema, day_shift, page + 1))
+            json_data = self._get_json_request(URLs.showtime_url(id_cinema, day_shift, page + 1))
             page = int(json_data["pagination"]["page"])
             totalPages = int(json_data["pagination"]["totalPages"])
-            for movie in json_data["results"]:
-                title = movie["movie"]["title"]
-                duration = movie["movie"]["runtime"]
-                list_vf = list()
-                for showtime_original in movie["showtimes"]["original"]:
-                    list_vf.append(showtime_original["startsAt"])
-                list_vo = list()
-                for showtime_multiple in movie["showtimes"]["multiple"]:
-                    list_vo.append(showtime_multiple["startsAt"])
+            for element in json_data["results"]:
+                title = element["movie"]["title"]
+                showtimes = list()
+                lst_internal_ids = list()
+                for showtimes_key in element["showtimes"].keys():
+                    for showtime in element["showtimes"][showtimes_key]:
+                        if showtime["internalId"] not in lst_internal_ids:
+                            lst_internal_ids.append(showtime["internalId"])
+                            showtimes.append({
+                                "startsAt": showtime["startsAt"],
+                                "diffusionVersion": showtime["diffusionVersion"],
+                            })
+
                 formated_data.append({
                     "title": title,
-                    "duration": duration,
-                    "VF": list_vf,
-                    "VO": list_vo
+                    "showtimes": showtimes
                 })
 
         return formated_data
 
+    def get_movies(self, id_cinema, day_shift=0, verbose_url=False):
+        """
+        Récupération des films pour des cinemas et des jours
+        :param verbose_url: url de la requête scrapter
+        :param ids_cinema: id des cinemas
+        :param days_shift: décalages en jours par rapport à la date actuelle (positif)
+        :return:
+        """
+        formated_data = list()
+        lst_internal_ids = list()
+        page, totalPages = 0, 1
+        while page < totalPages:
+            if verbose_url:
+                print(URLs.showtime_url(id_cinema, day_shift, page + 1))
+            json_data = self._get_json_request(URLs.showtime_url(id_cinema, day_shift, page + 1))
+            page = int(json_data["pagination"]["page"])
+            totalPages = int(json_data["pagination"]["totalPages"])
+
+            for element in json_data["results"]:
+                if element["movie"]["internalId"] not in lst_internal_ids:
+                    lst_internal_ids.append(element["movie"]["internalId"])
+                    title = element["movie"]["title"]
+                    originalTitle = element["movie"]["originalTitle"]
+                    synopsisFull = element["movie"]["synopsisFull"]
+                    urlPoster = element["movie"]["poster"]["url"]
+                    runtime = element["movie"]["runtime"]
+                    languages = list(element["movie"]["languages"])
+                    if element["movie"]["releases"][0]["releaseDate"] is not None:
+                        releaseDate = element["movie"]["releases"][0]["releaseDate"]["date"]
+                    else:
+                        releaseDate = ""
+                    hasDvdRelease = element["movie"]["flags"]["hasDvdRelease"]
+                    formated_data.append({
+                        "title": title,
+                        "originalTitle": originalTitle,
+                        "synopsisFull": synopsisFull,
+                        "urlPoster": urlPoster,
+                        "runtime": runtime,
+                        "languages": languages,
+                        "releaseDate": releaseDate,
+                        "hasDvdRelease": hasDvdRelease
+                    })
+        return formated_data
+
 
 class URLs:
-
     BASE_URL = "https://www.allocine.fr/"
     SEANCES = "salle/"
     CINEMA = "cinema/"
@@ -167,30 +215,53 @@ class URLs:
 
 
 if __name__ == '__main__':
-
     api = allocineAPI()
 
-    # ret = api.get_top_villes()
-    # for elt in ret: print(elt)
+    films = api.get_movies('P0671')  # Film cité international aujourd'hui
+    for film in films:
+        print(film)
 
+    print("\n")
+
+    films = api.get_movies('P0671', day_shift=1)  # Film cité international demain
+    for film in films:
+        print(film)
+
+    print("\n")
+
+    showtimes = api.get_showtime('P0671')  # showtimes cité international aujourd'hui
+    for showtime in showtimes:
+        print(showtime)
+
+    print("\n")
+
+    showtimes = api.get_showtime('P0671', day_shift=1)  # showtimes cité international demain
+    for showtime in showtimes:
+        print(showtime)
+
+    # ret = api.get_top_villes()
+    # for elt in ret:
+    #    print(elt)
     # ret = api.get_departements()
-    # for elt in ret: print(elt)
+    # for elt in ret:
+    #    print(elt)
 
     # ret = api.get_circuit()
-    # for elt in ret: print(elt)
+    # for elt in ret:
+    #    print(elt)
 
-    # departement
-    Ain = "departement-83191"
-    # ville
-    AixenProvence = "ville-87860"
-    # circuit
-    PatheCinemas = "circuit-81002"
-
-    # cinemas = api.get_cinema(PatheCinemas)
-    # for cinema in cinemas:
-    #     print(cinema)
-
-    data = api.get_showtime("P0036")
-    for showtime in data:
-        print(showtime)
-    print(len(data))
+    ## departement
+    # Ain = "departement-83191"
+    ## ville
+    # AixenProvence = "ville-87860"
+    ## circuit
+    # PatheCinemas = "circuit-81002"
+    #
+    ## cinemas = api.get_cinema(PatheCinemas)
+    ## for cinema in cinemas:
+    ##     print(cinema)
+    #
+    # data = api.get_showtime("P0036")
+    # for showtime in data:
+    # print(showtime)
+    # print(len(data))
