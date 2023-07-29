@@ -175,7 +175,8 @@ class allocineAPI:
                     runtime = element["movie"]["runtime"]
                     languages = list(element["movie"]["languages"])
                     hasDvdRelease = element["movie"]["flags"]["hasDvdRelease"]
-                    weeklyOuting = element["movie"]["flags"]["weeklyOuting"]
+                    isPremiere = element["movie"]["customFlags"]["isPremiere"]
+                    weeklyOuting = element["movie"]["customFlags"]["weeklyOuting"]
                     formated_data.append({
                         "title": title,
                         "originalTitle": originalTitle,
@@ -184,6 +185,7 @@ class allocineAPI:
                         "runtime": runtime,
                         "languages": languages,
                         "hasDvdRelease": hasDvdRelease,
+                        "isPremiere": isPremiere,
                         "weeklyOuting": weeklyOuting
                     })
         return formated_data
