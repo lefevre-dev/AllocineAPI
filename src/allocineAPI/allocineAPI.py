@@ -174,11 +174,8 @@ class allocineAPI:
                     urlPoster = element["movie"]["poster"]["url"]
                     runtime = element["movie"]["runtime"]
                     languages = list(element["movie"]["languages"])
-                    if element["movie"]["releases"][0]["releaseDate"] is not None:
-                        releaseDate = element["movie"]["releases"][0]["releaseDate"]["date"]
-                    else:
-                        releaseDate = ""
                     hasDvdRelease = element["movie"]["flags"]["hasDvdRelease"]
+                    weeklyOuting = element["movie"]["flags"]["weeklyOuting"]
                     formated_data.append({
                         "title": title,
                         "originalTitle": originalTitle,
@@ -186,8 +183,8 @@ class allocineAPI:
                         "urlPoster": urlPoster,
                         "runtime": runtime,
                         "languages": languages,
-                        "releaseDate": releaseDate,
-                        "hasDvdRelease": hasDvdRelease
+                        "hasDvdRelease": hasDvdRelease,
+                        "weeklyOuting": weeklyOuting
                     })
         return formated_data
 
@@ -217,7 +214,7 @@ class URLs:
 if __name__ == '__main__':
     api = allocineAPI()
 
-    films = api.get_movies('P0671')  # Film cité international aujourd'hui
+    films = api.get_movies('P0671', verbose_url=True)  # Film cité international aujourd'hui
     for film in films:
         print(film)
 
