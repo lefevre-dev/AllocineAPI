@@ -1,5 +1,11 @@
+# Package
+https://pypi.org/project/allocine-seances/
+```
+pip install allocine-seances
+```
+
 # Description
-<ins>Objectif</ins> : récupération des horaires des séances de cinéma.
+Objectif : récupération des horaires des séances de cinéma.
 
 Les méthodes ```get_top_villes()```, ```get_departements()``` et ```get_circuit()``` retournent un id d’emplacement.
 
