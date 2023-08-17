@@ -166,27 +166,55 @@ class allocineAPI:
             totalPages = int(json_data["pagination"]["totalPages"])
 
             for element in json_data["results"]:
-                if element["movie"]["internalId"] not in lst_internal_ids:
-                    lst_internal_ids.append(element["movie"]["internalId"])
-                    title = element["movie"]["title"]
-                    originalTitle = element["movie"]["originalTitle"]
-                    synopsisFull = element["movie"]["synopsisFull"]
-                    urlPoster = element["movie"]["poster"]["url"]
-                    runtime = element["movie"]["runtime"]
-                    languages = list(element["movie"]["languages"])
-                    hasDvdRelease = element["movie"]["flags"]["hasDvdRelease"]
-                    isPremiere = element["movie"]["customFlags"]["isPremiere"]
-                    weeklyOuting = element["movie"]["customFlags"]["weeklyOuting"]
+                internal_id = element["movie"]["internalId"]
+                if internal_id not in lst_internal_ids:
+                    lst_internal_ids.append(internal_id)
+
+                    title = element["movie"].get("title")
+                    if title is None:
+                        title = "Unknown Title"
+
+                    original_title = element["movie"].get("originalTitle")
+                    if original_title is None:
+                        original_title = "Unknown Original Title"
+
+                    synopsis_full = element["movie"].get("synopsisFull")
+                    if synopsis_full is None:
+                        synopsis_full = "No Synopsis Available"
+
+                    url_poster = element["movie"]["poster"].get("url")
+                    if url_poster is None:
+                        url_poster = "No Poster URL Available"
+
+                    releases = element["movie"]["releases"]
+                    result_release = list()
+                    for release in releases:
+                        name = release.get("name")
+                        releaseDate = release.get("releaseDate")
+                        if releaseDate is not None:
+                            releaseDate = release.get("releaseDate").get("date")
+                        result_release.append({'releaseName': name, 'releaseDate': releaseDate})
+
+                    if releaseDate is None:
+                        releaseDate = "No Release Date Available"
+
+                    runtime = element["movie"].get("runtime", 0)
+                    languages = element["movie"].get("languages", [])  # Return empty list if None
+                    has_dvd_release = element["movie"]["flags"].get("hasDvdRelease", False)
+                    is_premiere = element["movie"]["customFlags"].get("isPremiere", False)
+                    weekly_outing = element["movie"]["customFlags"].get("weeklyOuting", False)
+
                     formated_data.append({
                         "title": title,
-                        "originalTitle": originalTitle,
-                        "synopsisFull": synopsisFull,
-                        "urlPoster": urlPoster,
+                        "originalTitle": original_title,
+                        "synopsisFull": synopsis_full,
+                        "urlPoster": url_poster,
+                        "releases": result_release,
                         "runtime": runtime,
                         "languages": languages,
-                        "hasDvdRelease": hasDvdRelease,
-                        "isPremiere": isPremiere,
-                        "weeklyOuting": weeklyOuting
+                        "hasDvdRelease": has_dvd_release,
+                        "isPremiere": is_premiere,
+                        "weeklyOuting": weekly_outing
                     })
         return formated_data
 
@@ -216,25 +244,29 @@ class URLs:
 if __name__ == '__main__':
     api = allocineAPI()
 
-    films = api.get_movies('P0671', verbose_url=True)  # Film cité international aujourd'hui
-    for film in films:
-        print(film)
+    # films = api.get_movies('P0671', verbose_url=True)  # Film cité international aujourd'hui
+    # for film in films:
+    #     print(film)
+    #
+    # print("\n")
+    #
+    # films = api.get_movies('P0671', day_shift=1)  # Film cité international demain
+    # for film in films:
+    #     print(film)
+    #
+    # print("\n")
+    #
+    # showtimes = api.get_showtime('P0671')  # showtimes cité international aujourd'hui
+    # for showtime in showtimes:
+    #     print(showtime)
+    #
+    # print("\n")
+    #
+    # showtimes = api.get_showtime('P0671', day_shift=1)  # showtimes cité international demain
+    # for showtime in showtimes:
+    #     print(showtime)
 
-    print("\n")
-
-    films = api.get_movies('P0671', day_shift=1)  # Film cité international demain
-    for film in films:
-        print(film)
-
-    print("\n")
-
-    showtimes = api.get_showtime('P0671')  # showtimes cité international aujourd'hui
-    for showtime in showtimes:
-        print(showtime)
-
-    print("\n")
-
-    showtimes = api.get_showtime('P0671', day_shift=1)  # showtimes cité international demain
+    showtimes = api.get_movies('P0036', day_shift=1, verbose_url=True)  # showtimes cité international demain
     for showtime in showtimes:
         print(showtime)
 
