@@ -182,11 +182,12 @@ class allocineAPI:
                     if synopsis_full is None:
                         synopsis_full = "No Synopsis Available"
 
-                    url_poster = element["movie"]["poster"]
-                    if url_poster is None:
+                    if element["movie"]["poster"] is None:
                         url_poster = "No Poster URL Available"
                     else:
-                        url_poster = url_poster["url"]
+                        url_poster = element["movie"]["poster"].get("url")
+                        if url_poster is None:
+                            url_poster = "No Poster URL Available"
 
                     releases = element["movie"]["releases"]
                     result_release = list()
