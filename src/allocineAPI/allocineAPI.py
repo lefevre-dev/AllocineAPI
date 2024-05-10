@@ -178,6 +178,19 @@ class allocineAPI:
                     if original_title is None:
                         original_title = "Unknown Original Title"
 
+                    director = ""
+                    try:
+                        for credit in element["movie"]["credits"]:
+                            if credit["position"].get("name") == "DIRECTOR":
+                                if director != "":
+                                    director += " | "
+                                director += credit["person"].get("firstName") + " " + credit["person"].get("lastName")
+                    except:
+                        director = "Error"
+
+                    if director == "":
+                        director = "Unknown Director"
+
                     synopsis_full = element["movie"].get("synopsisFull")
                     if synopsis_full is None:
                         synopsis_full = "No Synopsis Available"
@@ -210,6 +223,7 @@ class allocineAPI:
                     formated_data.append({
                         "title": title,
                         "originalTitle": original_title,
+                        "director": director,
                         "synopsisFull": synopsis_full,
                         "urlPoster": url_poster,
                         "releases": result_release,
