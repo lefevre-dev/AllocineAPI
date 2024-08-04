@@ -217,8 +217,12 @@ class allocineAPI:
                     runtime = element["movie"].get("runtime", 0)
                     languages = element["movie"].get("languages", [])  # Return empty list if None
                     has_dvd_release = element["movie"]["flags"].get("hasDvdRelease", False)
-                    is_premiere = element["movie"]["customFlags"].get("isPremiere", False)
-                    weekly_outing = element["movie"]["customFlags"].get("weeklyOuting", False)
+
+                    custom_flags = element["movie"].get("customFlags", False)
+                    is_premiere, weekly_outing = False, False
+                    if custom_flags:
+                        is_premiere = element["movie"]["customFlags"].get("isPremiere", False)
+                        weekly_outing = element["movie"]["customFlags"].get("weeklyOuting", False)
 
                     formated_data.append({
                         "title": title,
