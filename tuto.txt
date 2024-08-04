@@ -1,0 +1,10 @@
+# changer la version dans pyproject.toml
+# supprimer les fichiers de l’ancienne version
+# pour build le package
+py -m build
+# pour uploader le package
+twine upload dist/*
+# ajouter un fichier .pypirc dans le dossier C:/User/<name>
+#[pypi]
+#  username = __token__
+#  password = <pypi-token>
