@@ -11,7 +11,7 @@ Les méthodes ```get_top_villes()```, ```get_departements()``` et ```get_circuit
 
 La méthode ```get_cinema(id_location)``` retourne un id de cinéma pour un emplacement donné.
 
-La méthode ```get_showtime(id_cinema, day_shift)``` retourne la liste des séances pour un cinema donné et un jour. le paramètre day_shift (entier positif) représente le décalage en jour par rapport à la date actuelle.
+La méthode ```get_showtime(id_cinema, date_str)``` retourne la liste des séances pour un cinema donné et un jour. le paramètre day_shift (entier positif) représente le décalage en jour par rapport à la date actuelle.
 
 # Import
 
@@ -62,7 +62,7 @@ cinemas = api.get_cinema("departement-83191")
 
 ## liste des seances
 ```python
-data = api.get_showtime("W2920")
+data = api.get_showtime("W2920", "2024-01-01")
 # {'title': 'Les Aventures de Ricky', 'duration': '1h 25min', 'VF': [], 'VO': ['2023-04-15T13:45:00', '2023-04-15T15:45:00']}
 # {'title': "Donjons & Dragons : L'Honneur des voleurs", 'duration': '2h 14min', 'VF': [], 'VO': ['2023-04-15T10:30:00', '2023-04-15T13:45:00', '2023-04-15T17:00:00', '2023-04-15T18:25:00', '2023-04-15T21:00:00']}
 # {'title': 'Une histoire d’amour', 'duration': '1h 30min', 'VF': [], 'VO': ['2023-04-15T14:40:00', '2023-04-15T16:45:00', '2023-04-15T19:50:00', '2023-04-15T21:55:00']}
