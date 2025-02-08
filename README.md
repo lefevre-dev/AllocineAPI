@@ -4,6 +4,10 @@ https://pypi.org/project/allocine-seances/
 pip install allocine-seances
 ```
 
+# Warning
+- v0.0.11 : Modification du paramètre day_shift en date_str
+- v0.0.12 : Correction du endpoint /cinema
+
 # Description
 Objectif : récupération des horaires des séances de cinéma.
 

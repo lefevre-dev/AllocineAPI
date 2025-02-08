@@ -11,7 +11,7 @@ class allocineAPI:
     def _get_json_request(self, path, url_params: dict = None) -> dict:
         req = requests.get(path, params=url_params)
         if req.status_code != 200:
-            raise
+            raise Exception("Error " + str(req.status_code))
         try:
             return json.loads(req.text)
         except ValueError:
@@ -20,7 +20,7 @@ class allocineAPI:
     def _get_request(self, path, params=None):
         req = requests.get(path, params=params)
         if req.status_code != 200:
-            raise
+            raise Exception("Error " + str(req.status_code))
         return req.text
 
     def _scrap_sceances(self):
@@ -100,7 +100,10 @@ class allocineAPI:
         while next_page is not None:
             cinemas, next_page = self._scrap_cinemas(id_location, page=next_page)
             for cinema in cinemas:
-                data = cinema.select('*[class*="add-theater-anchor"]')[0]
+                data = cinema.select('*[class*="add-theater-anchor"]')
+                if len(data) == 0:
+                    continue
+                data = data[0]
                 cinema_data = json.loads(data["data-theater"])
                 address = cinema.find("address").text
                 result.append({
@@ -253,9 +256,9 @@ class URLs:
     @staticmethod
     def cinemas_url(id_location):
         if "circuit" in id_location:
-            return URLs.BASE_URL + URLs.SEANCES + id_location
+            return URLs.BASE_URL + URLs.SEANCES + id_location + "/"
         else:
-            return URLs.BASE_URL + URLs.SEANCES + URLs.CINEMA + id_location
+            return URLs.BASE_URL + URLs.SEANCES + URLs.CINEMA + id_location + "/"
 
     @staticmethod
     def showtime_url(id_cinema, date_str: str, page):
@@ -264,57 +267,61 @@ class URLs:
 
 if __name__ == '__main__':
     api = allocineAPI()
-    data = api.get_showtime("P1699", "2025-01-23")
-    print(data)
+    cinemas = api.get_cinema("departement-83191")
+    for cinema in cinemas:
+        print(cinema)
 
-    films = api.get_movies('P0671',"2025-01-23", verbose_url=True)  # Film cité international aujourd'hui
-    for film in films:
-        print(film)
-
-    print("\n")
-
-    films = api.get_movies('P0671', "2025-01-23")  # Film cité international demain
-    for film in films:
-        print(film)
-
-    print("\n")
-
-    showtimes = api.get_showtime('P0671', "2025-01-23")  # showtimes cité international aujourd'hui
-    for showtime in showtimes:
-        print(showtime)
-
-    print("\n")
-
-    showtimes = api.get_showtime('P0671', "2025-01-23")  # showtimes cité international demain
-    for showtime in showtimes:
-        print(showtime)
-
-    showtimes = api.get_movies('P0036', "2025-01-23", verbose_url=True)  # showtimes cité international demain
-    for showtime in showtimes:
-        print(showtime)
-
-    ret = api.get_top_villes()
-    for elt in ret:
-       print(elt)
-    ret = api.get_departements()
-    for elt in ret:
-       print(elt)
-
-    ret = api.get_circuit()
-    for elt in ret:
-       print(elt)
-
+    # data = api.get_showtime("P1699", "2025-01-23")
+    # print(data)
+    #
+    # films = api.get_movies('P0671',"2025-01-23", verbose_url=True)  # Film cité international aujourd'hui
+    # for film in films:
+    #     print(film)
+    #
+    # print("\n")
+    #
+    # films = api.get_movies('P0671', "2025-01-23")  # Film cité international demain
+    # for film in films:
+    #     print(film)
+    #
+    # print("\n")
+    #
+    # showtimes = api.get_showtime('P0671', "2025-01-23")  # showtimes cité international aujourd'hui
+    # for showtime in showtimes:
+    #     print(showtime)
+    #
+    # print("\n")
+    #
+    # showtimes = api.get_showtime('P0671', "2025-01-23")  # showtimes cité international demain
+    # for showtime in showtimes:
+    #     print(showtime)
+    #
+    # showtimes = api.get_movies('P0036', "2025-01-23", verbose_url=True)  # showtimes cité international demain
+    # for showtime in showtimes:
+    #     print(showtime)
+    #
+    # ret = api.get_top_villes()
+    # for elt in ret:
+    #    print(elt)
+    # ret = api.get_departements()
+    # for elt in ret:
+    #    print(elt)
+    #
+    # ret = api.get_circuit()
+    # for elt in ret:
+    #    print(elt)
+    #
     # departement
-    Ain = "departement-83191"
-    # ville
-    AixenProvence = "ville-87860"
-    # circuit
-    PatheCinemas = "circuit-81002"
-
-    # cinemas = api.get_cinema(PatheCinemas)
+    # Ain = "departement-83191"
+    # # ville
+    # AixenProvence = "ville-87860"
+    # # circuit
+    # PatheCinemas = "circuit-81002"
+    #
+    # cinemas = api.get_cinema(Ain)
     # for cinema in cinemas:
     #     print(cinema)
-
-    data = api.get_showtime("P0036", "2025-01-23")
-
-    print(len(data))
+    #
+    # data = api.get_showtime("P0036", "2025-01-23")
+    #
+    # print(len(data))

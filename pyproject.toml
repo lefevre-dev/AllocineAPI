@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "allocine-seances"
-version = "0.0.11"
+version = "0.0.12"
 authors = [
   { name="lefevre-dev", email="louislefevre.dev@gmail.com" },
 ]
