@@ -169,6 +169,8 @@ class allocineAPI:
             totalPages = int(json_data["pagination"]["totalPages"])
 
             for element in json_data["results"]:
+                if element["movie"] is None:
+                    continue
                 internal_id = element["movie"]["internalId"]
                 if internal_id not in lst_internal_ids:
                     lst_internal_ids.append(internal_id)
@@ -267,16 +269,16 @@ class URLs:
 
 if __name__ == '__main__':
     api = allocineAPI()
-    cinemas = api.get_cinema("departement-83191")
-    for cinema in cinemas:
-        print(cinema)
+    #cinemas = api.get_cinema("departement-83191")
+    #for cinema in cinemas:
+    #    print(cinema)
 
-    # data = api.get_showtime("P1699", "2025-01-23")
+    # data = api.get_showtime("P1699", "2025-06-07")
     # print(data)
-    #
-    # films = api.get_movies('P0671',"2025-01-23", verbose_url=True)  # Film cité international aujourd'hui
-    # for film in films:
-    #     print(film)
+
+    films = api.get_movies('P3757',"2025-06-08", verbose_url=True)  # Film cité international aujourd'hui
+    for film in films:
+        print(film)
     #
     # print("\n")
     #
