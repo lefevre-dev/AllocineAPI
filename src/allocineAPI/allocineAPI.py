@@ -219,6 +219,12 @@ class allocineAPI:
                     if releaseDate is None:
                         releaseDate = "No Release Date Available"
 
+                    genres = []
+                    if element["movie"].get("genres", 0):
+                        g = element["movie"].get("genres", 0)
+                        for e in g:
+                            genres.append(e['translate'])
+
                     runtime = element["movie"].get("runtime", 0)
                     languages = element["movie"].get("languages", [])  # Return empty list if None
                     has_dvd_release = element["movie"]["flags"].get("hasDvdRelease", False)
@@ -237,6 +243,7 @@ class allocineAPI:
                         "urlPoster": url_poster,
                         "releases": result_release,
                         "runtime": runtime,
+                        "genres": genres,
                         "languages": languages,
                         "hasDvdRelease": has_dvd_release,
                         "isPremiere": is_premiere,
@@ -276,7 +283,7 @@ if __name__ == '__main__':
     # data = api.get_showtime("P1699", "2025-06-07")
     # print(data)
 
-    films = api.get_movies('P3757',"2025-06-08", verbose_url=True)  # Film cité international aujourd'hui
+    films = api.get_movies('P3757',"2025-07-13", verbose_url=True)  # Film cité international aujourd'hui
     for film in films:
         print(film)
     #
