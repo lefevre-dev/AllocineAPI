@@ -15,7 +15,7 @@ Les méthodes ```get_top_villes()```, ```get_departements()``` et ```get_circuit
 
 La méthode ```get_cinema(id_location)``` retourne un id de cinéma pour un emplacement donné.
 
-La méthode ```get_showtime(id_cinema, date_str)``` retourne la liste des séances pour un cinema donné et un jour. le paramètre day_shift (entier positif) représente le décalage en jour par rapport à la date actuelle.
+La méthode ```get_showtime(id_cinema, date_str)``` retourne la liste des séances pour un cinema donné et un jour.
 
 # Import
 
