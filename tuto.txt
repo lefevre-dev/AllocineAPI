@@ -3,6 +3,7 @@
 # pour build le package
 py -m build
 # pour uploader le package
+# update twine pip install twine --upgrade
 twine upload dist/*
 # ajouter un fichier .pypirc dans le dossier C:/User/<name>
 #[pypi]

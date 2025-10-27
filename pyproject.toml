@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools==76.1.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "allocine-seances"
-version = "0.0.12"
+version = "0.0.13"
 authors = [
   { name="lefevre-dev", email="louislefevre.dev@gmail.com" },
 ]
